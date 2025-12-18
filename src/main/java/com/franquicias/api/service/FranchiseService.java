@@ -1,23 +1,35 @@
 package com.franquicias.api.service;
 
-import com.franquicias.api.domain.model.Franchise;
-import com.franquicias.api.repository.FranchiseRepository;
+import com.franquicias.api.domain.dto.TopProductByBranchResponse;
+import com.franquicias.api.domain.model.Branch;
+import com.franquicias.api.repository.BranchRepository;
+import com.franquicias.api.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class FranchiseService {
 
-    private final FranchiseRepository repository;
+    private final BranchRepository branchRepository;
+    private final ProductRepository productRepository;
 
-    public Flux<Franchise> findAll() {
-        return repository.findAll();
-    }
+    public Flux<TopProductByBranchResponse> getTopProductsByFranchise(String franchiseId) {
 
-    public Mono<Franchise> create(Franchise franchise) {
-        return repository.save(franchise);
+        return branchRepository.findByFranchiseId(franchiseId)
+                .flatMap(branch ->
+                        productRepository
+                                .findFirstByBranchIdOrderByStockDesc(branch.getId())
+                                .map(product ->
+                                        new TopProductByBranchResponse(
+                                                branch.getId(),
+                                                branch.getName(),
+                                                product.getId(),
+                                                product.getName(),
+                                                product.getStock()
+                                        )
+                                )
+                );
     }
 }
