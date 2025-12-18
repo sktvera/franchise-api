@@ -85,3 +85,11 @@ DELETE /api/products/{id}
 
 Producto con mayor stock por sucursal
 GET /api/franchises/FRANQ_001/top-products
+
+
+
+
+
+docker-compose down -v                                                
+mvn clean package
+docker-compose up --build
