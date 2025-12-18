@@ -93,3 +93,5 @@ GET /api/franchises/FRANQ_001/top-products
 docker-compose down -v                                                
 mvn clean package
 docker-compose up --build
+
+http://localhost:8080/webjars/swagger-ui/index.html#/
